@@ -14,6 +14,13 @@ void
 parallelSort (int N, keytype* A)
 {
   /* Lucky you, you get to start from scratch */
+  if (n < 2) {return;}
+
+  parallelSort(N/2, A);
+
+  parallelSort( N/2 , A + (N/2));
+
+  //some parallel merge
 }
 
 /* eof */
