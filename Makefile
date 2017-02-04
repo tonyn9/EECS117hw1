@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS =
 COPTFLAGS = -O3 -g
-DEBUGFLAGS = -00 -g
+DEBUGFLAGS = -OO -g
 LDFLAGS =
 OMPFLAGS = -fopenmp
 # replace COPTFLAGS with DEBUGFLAGS to run gdb
