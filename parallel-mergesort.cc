@@ -226,9 +226,9 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 		}
 	}
 	while(i<N/2){
-		tmp[ti] = A[j];
+		tmp[ti] = A[i];
 		ti++;
-		j++;
+		i++;
 	}
 	while(j<N){
 		tmp[ti] = A[j];
