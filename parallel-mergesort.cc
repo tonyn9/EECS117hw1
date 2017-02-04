@@ -189,7 +189,8 @@ parallelSort (int N, keytype* A)
 void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
   if (N < 10000) {
-	  mergeSerial(N, A, tmp);}
+	  mergeSerial(N, A, tmp);
+	  return;}
 
   #pragma omp task firstprivate (N, A, tmp)
   parallelMergeSort(N/2, A, tmp);
@@ -239,3 +240,4 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 }
 
 /* eof */
+
