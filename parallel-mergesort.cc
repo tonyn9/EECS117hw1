@@ -164,7 +164,7 @@ void parallelSort(int N, keytype* A)
 
 void parallelMergeSort(int N, keytype* A, keytype* tmp);
 void mergeParallel (int N, keytype* A, keytype* tmp);
-
+void mergeSerial(int N, keytype* A, keytype* tmp);
 
 // 'Main' sorting function, calls parallel mergesort on array A of size N
 // returns A, sorted
@@ -174,7 +174,7 @@ parallelSort (int N, keytype* A)
   /* Lucky you, you get to start from scratch */
 
   // make a temperorary array to pass to new function
-  keytype* temp_in = new newKeys(N);
+  keytype* temp_in = newKeys(N);
   parallelMergeSort(N, A, temp_in);
 
   // copy values of temp into A
@@ -188,13 +188,13 @@ parallelSort (int N, keytype* A)
 //recursive call
 void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
-  if (n < 2) {return;}
+  if (N < 2) {return;}
 
   #pragma omp task firstprivate (N, A, tmp)
-  parallelSortMergeSort(N/2, A, tmp);
+  parallelMergeSort(N/2, A, tmp);
 
   #pragma omp task firstprivate (N, A, tmp)
-  parallelSortMergeSort( N/2 + 1, A + (N/2), tmp);
+  parallelMergeSort( N/2 + 1, A + (N/2), tmp);
 
   #pragma omp taskwait
 
@@ -234,7 +234,7 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 		ti++; 
 		j++;
 	}
-	memcpy(A, tmp, n * sizeof (keytype));
+	memcpy(A, tmp, N * sizeof (keytype));
 }
 
 /* eof */
