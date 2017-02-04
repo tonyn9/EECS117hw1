@@ -1,8 +1,10 @@
 CC = g++
 CFLAGS =
 COPTFLAGS = -O3 -g
+DEBUGFLAGS = -00 -g
 LDFLAGS =
 OMPFLAGS = -fopenmp
+# replace COPTFLAGS with DEBUGFLAGS to run gdb
 
 default:
 	@echo "=================================================="
