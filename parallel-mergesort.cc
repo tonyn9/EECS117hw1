@@ -224,13 +224,13 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 			j++;
 		}
 	}
-	while(i<n/2){
-		tmp[ti] = X[j];
+	while(i<N/2){
+		tmp[ti] = A[j];
 		ti++;
 		j++;
 	}
-	while(j<n){
-		tmp[ti] = X[j];
+	while(j<N){
+		tmp[ti] = A[j];
 		ti++; 
 		j++;
 	}
