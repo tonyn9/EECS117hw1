@@ -234,7 +234,7 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 		ti++; 
 		j++;
 	}
-	memcpy(A, tmp, n * sizeof (keytype))
+	memcpy(A, tmp, n * sizeof (keytype));
 }
 
 /* eof */
