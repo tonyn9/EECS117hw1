@@ -164,6 +164,7 @@ void parallelSort(int N, keytype* A)
 
 void parallelMergeSort(int N, keytype* A, keytype* tmp);
 void mergeParallel (int N, keytype* A, keytype* tmp);
+void serialMergeSort(int N, keytype* A, keytype* tmp);
 void mergeSerial(int N, keytype* A, keytype* tmp);
 
 // 'Main' sorting function, calls parallel mergesort on array A of size N
@@ -189,7 +190,7 @@ parallelSort (int N, keytype* A)
 void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
   if (N < 10000) {
-	  mergeSerial(N, A, tmp);
+	  qsort (A, N, sizeof (keytype), compare)
 	  return;}
 
   #pragma omp task firstprivate (N, A, tmp)
@@ -205,6 +206,13 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
 //tbd
 void mergeParallel (int N, keytype* A, keytype* tmp){
+
+}
+
+void serialMergeSort(int N, keytype* A, keytype* tmp){
+	if(N <  2){
+		return;
+	}
 
 }
 
@@ -240,4 +248,3 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 }
 
 /* eof */
-
