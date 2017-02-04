@@ -167,6 +167,8 @@ void mergeParallel (int N, keytype* A, keytype* tmp);
 void serialMergeSort(int N, keytype* A, keytype* tmp);
 void mergeSerial(int N, keytype* A, keytype* tmp);
 
+static int compare (const void* a, const void* b);
+
 // 'Main' sorting function, calls parallel mergesort on array A of size N
 // returns A, sorted
 void
@@ -245,6 +247,18 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 		j++;
 	}
 	memcpy(A, tmp, N * sizeof (keytype));
+}
+
+static int compare (const void* a, const void* b)
+{
+  keytype ka = *(const keytype *)a;
+  keytype kb = *(const keytype *)b;
+  if (ka < kb)
+    return -1;
+  else if (ka == kb)
+    return 0;
+  else
+    return 1;
 }
 
 /* eof */
