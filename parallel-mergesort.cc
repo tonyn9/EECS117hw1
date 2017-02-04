@@ -163,8 +163,11 @@ void parallelSort(int N, keytype* A)
 */
 
 void parallelMergeSort(int N, keytype* A, keytype* tmp);
-void merge (int N, keytype* A, keytype* tmp);
+void mergeParallel (int N, keytype* A, keytype* tmp);
 
+
+// 'Main' sorting function, calls parallel mergesort on array A of size N
+// returns A, sorted
 void
 parallelSort (int N, keytype* A)
 {
@@ -181,7 +184,8 @@ parallelSort (int N, keytype* A)
   free (temp_in);
 }
 
-
+//Recursive MergeSort Algorithm designed to add threads with each 
+//recursive call
 void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
   if (n < 2) {return;}
@@ -194,12 +198,43 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
   #pragma omp taskwait
 
-  merge(N, A, tmp);
+  mergeSerial(N, A, tmp);
 }
 
+//tbd
+void mergeParallel (int N, keytype* A, keytype* tmp){
 
-void merge (int N, keytype* A, keytype* tmp){
+}
 
+//does a serial merge, usefull for single threads 
+//or when at a certain size
+void mergeSerial(int N, keytype* A, keytype* tmp){
+	int i = 0;
+	int j = N/2;
+	int ti = 0;
+
+	while ( i < N/2 && j < N){
+		if (A[i] < A[j]){
+			tmp[ti] = A[i];
+			ti++;
+			i++;
+		}else{
+			tmp[ti] = A[j];
+			ti++;
+			j++;
+		}
+	}
+	while(i<n/2){
+		tmp[ti] = X[j];
+		ti++;
+		j++;
+	}
+	while(j<n){
+		tmp[ti] = X[j];
+		ti++; 
+		j++;
+	}
+	memcpy(A, tmp, n * sizeof (keytype))
 }
 
 /* eof */
