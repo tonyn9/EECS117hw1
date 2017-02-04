@@ -199,7 +199,7 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
   parallelMergeSort(N/2, A, tmp);
 
   #pragma omp task firstprivate (N, A, tmp)
-  parallelMergeSort( N/2 + 1, A + (N/2), tmp);
+  parallelMergeSort( N - (N/2), A + (N/2), tmp);
 
   #pragma omp taskwait
 
@@ -217,7 +217,7 @@ void serialMergeSort(int N, keytype* A, keytype* tmp){
 	}
 
 	serialMergeSort(N/2, A, tmp);
-	serialMergeSort(N/2 + 1, A + (N/2), tmp);
+	serialMergeSort(N - (N/2), A + (N/2), tmp);
 
 	mergeSerial(N, A, tmp);
 
