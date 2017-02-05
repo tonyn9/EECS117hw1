@@ -12,7 +12,7 @@
 #include "sort.hh"
 //What I did so far.
 
-/*
+
 // Swap two integers a and b
 void intExchange(int& a, int& b)
 {
@@ -64,7 +64,7 @@ void parallelMerge(keytype* TMP, int p1, int r1, int p2, int r2, keytype* OUT, i
 	///////////////////////////////////
 	// use a serial in-place merge when problem size becomes small enough
 	//   to reduce overhead
-	if (n1 < 100000){
+	if (n1 < 75000){
 		int i, j, k;
 		i = p1;
 		j = p2;
@@ -110,7 +110,7 @@ void parallelMerge(keytype* TMP, int p1, int r1, int p2, int r2, keytype* OUT, i
 		#pragma omp taskwait
 	}
 }
-
+/*
 // Recursive parallel mergesort algorithm, borrowed from CLRS Intoduction to Algorithms, 3rd ed.
 void parallelMergeSort(keytype* A, int p, int r, keytype* OUT, int s, int numThreads)
 	{
@@ -191,8 +191,8 @@ parallelSort (int N, keytype* A)
 //recursive call
 void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
-  if (N < 10000) {
-	  qsort (A, N, sizeof (keytype), compare);
+  if (N < 750000) {
+	  serialMergeSort(N, A, tmp));
 	  return;}
 
   #pragma omp task firstprivate (N, A, tmp)
@@ -203,7 +203,7 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
   #pragma omp taskwait
 
-  mergeSerial(N, A, tmp);
+  parallelMerge(A,0,N/2,N/2 + 1, N, tmp, 0);
 }
 
 //tbd
