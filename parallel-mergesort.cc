@@ -248,23 +248,29 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 	// k = binary search (B,k0) -> (d1,d2)
 	//(d1, d2) <- (B[0:k], B[k+1, N])
 
-	int k = binary_search (A2,0, A2_Length, (A2[0]+A2[A2_Length-1])/2);
+	//int k = binary_search (A2,0, A2_Length, (A2[0]+A2[A2_Length-1])/2);
 	
 	//parallel
 	//e1 = merge (c1,d1)
 	//e2 = merge (c2,d2)
 	//sync
 
-	#pragma omp task firstprivate (A1_Length, A1, k, A2, tmp)
+	/*#pragma omp task firstprivate (A1_Length, A1, k, A2, tmp)
 	keytype* temp1 = mergeParallel(A1_Length/2, A1, k, A2, tmp);
 
 	#pragma omp task firstprivate ( A1_Length, A1, k, A2, A2_Length, tmp)
-	keytype* temp2 = mergeParallel(A1_Length/2, A1 + A1_Length/2, A2_Length-k, A2 + k + 1, tmp);
+	keytype* temp2 = mergeParallel(A1_Length/2, A1 + A1_Length/2, A2_Length-k, A2 + k + 1, tmp);*/
+
+	#pragma omp task firstprivate (A1_Length, A1, k, A2, tmp)
+	keytype* temp1 = mergeParallel(A1_Length/2, A1, A2_Length/2, A2, tmp);
+
+	#pragma omp task firstprivate ( A1_Length, A1, k, A2, A2_Length, tmp)
+	keytype* temp2 = mergeParallel(A1_Length/2, A1 + A1_Length/2, A2_Length/2, A2 + A2_Length/2, tmp);
 
 	#pragma omp taskwait
 
-	memcpy(temp, temp1, (A1_Length/2 + k ) * sizeof (keytype));
-	memcpy(temp + (A1_Length/2 + k ), temp2, (A1_Length/2 + A2_Length-k) * sizeof(keytype));
+	memcpy(temp, temp1, (A1_Length) * sizeof (keytype));
+	memcpy(temp + (A1_Length/2 + A2_Length/2), temp2, (A1_Length/2 + A2_Length/2) * sizeof(keytype));
 
 	free(temp1);
 	free(temp2);
