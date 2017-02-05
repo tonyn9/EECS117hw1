@@ -211,7 +211,7 @@ parallelSort (int N, keytype* A)
 //recursive call
 void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
 
-  if (N < base) {
+  if (N <= base) {
 	  serialMergeSort(N, A, tmp);
 	  return;}
 
@@ -220,18 +220,49 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
   parallelMergeSort(N/2, A, tmp, base);
   parallelMergeSort( N - (N/2), A + (N/2), tmp, base);
   }
+  //parallelMergeSort(N/2, A + N/2 + 1, tmp, base);
+  
   #pragma omp taskwait
 
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
   mergeSerial(N, A, tmp);
   //mergeParallel(N/2, A);
-  //tmp = mergeParallel(N/2, A, N/2, A + (N/2), tmp);
+  //mergeParallel(N/2, A, N/2, A + (N/2), tmp, base);
   //memcpy (A, tmp, N * sizeof(keytype));
 }
 
 // Merge two ranges of source array T[ p1 .. r1 ] and T[ p2 .. r2 ] 
 // into destination array A starting at index p3.
-void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, int p3 ){
+void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, int p3, int base ){
+	
+	if(length1 + length2 <= base){
+		int i = p1;
+		int j = p2;
+		int k = p3;
+
+		while ( i <= r1 && j <= r2){
+			if(A[i] <= A[j]){
+				temp[k] = A[i];
+				i++;
+			} else{
+				temp[k] = A[i];
+				j++;
+			}
+			k++;
+		}
+		while (i <= r1){
+			temp[k] = T[i];
+			i++;
+			k++;
+		}
+		while(j <= r2){
+			temp[k] = A[j];
+			j++;
+			k++;
+		}
+		return;
+	}
+	
 	int length1 = r1 - p1 + 1;
 	int length2 = r2 - p2 + 1;
 	if ( length1 < length2 ){
@@ -248,6 +279,13 @@ void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, i
 	int q3 = p3 + (q1 - p1) + (q2 - p2);
 
 	temp[q3] = A[q1];
+
+	#pragma omp task
+	{
+		parallelMerge(A, p1, q1 - 1, p2, q2-1, temp, p3, base);
+		parallelMerge(A, q1 + 1, r1, q2, r2, a, q3 + 1, base);
+	}
+	#pragma omp taskwait
 
 
 }
