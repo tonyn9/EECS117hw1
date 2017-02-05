@@ -1,10 +1,9 @@
 CC = g++
 CFLAGS =
-COPTFLAGS = -O3 -g
-DEBUGFLAGS = -OO -g
+COPTFLAGS = -O3 -g -fopenmp
+DEBUGFLAGS = -00 -g
 LDFLAGS =
-OMPFLAGS = -fopenmp
-# replace COPTFLAGS with DEBUGFLAGS to run gdb
+
 
 default:
 	@echo "=================================================="
@@ -19,7 +18,7 @@ default:
 
 # Mergesort driver using OpenMP
 mergesort-omp: driver.o sort.o parallel-mergesort.o
-	$(CC) $(COPTFLAGS) $(OMPFLAGS) -o $@ $^
+	$(CC) $(COPTFLAGS) -o $@ $^
 
 # Quicksort driver using OpenMP
 qsort-omp: driver.o sort.o parallel-qsort.o
