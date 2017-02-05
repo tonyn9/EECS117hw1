@@ -162,10 +162,10 @@ void parallelSort(int N, keytype* A)
 
 */
 
-void parallelMergeSort(int N, keytype* A, keytype* tmp, int base);
+void parallelMergeSort( keytype* A, keytype* tmp, int start, int end, int base);
 void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, int p3, int base );
-void serialMergeSort(int N, keytype* A, keytype* tmp);
-void mergeSerial(int N, keytype* A, keytype* tmp);
+void serialMergeSort(keytype* A, int start, int end, keytype* tmp);
+void mergeSerial( keytype* A, int start, int end, keytype* tmp);
 int binary_search (keytype* A, int left, int right, keytype key);
 void exchange (int& a, int& b);
 
@@ -193,7 +193,7 @@ parallelSort (int N, keytype* A)
 
 	#pragma omp single
 	{
-		parallelMergeSort(N, A, temp_in, N/numThreads);
+		parallelMergeSort( A, temp_in, 0, N-1, N/numThreads);
 	}
 	
 }
@@ -209,26 +209,28 @@ parallelSort (int N, keytype* A)
 
 //Recursive MergeSort Algorithm designed to add threads with each 
 //recursive call
-void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
+void parallelMergeSort( keytype* A, keytype* tmp, int start, int end, int base){
 
   if (N <= base) {
-	  serialMergeSort(N, A, tmp);
+	  serialMergeSort(N, A, start, end, tmp);
 	  return;}
+int middle = start + (end - start)/2;
 
   #pragma omp task
   {
-  parallelMergeSort(N/2, A, tmp, base);
-  parallelMergeSort( N - (N/2), A + (N/2), tmp, base);
+  	parallelMergeSort(A, tmp, start, middle, base);
   }
+  parallelMergeSort(A,  middle + 1, end, tmp, base);
+  
   //parallelMergeSort(N/2, A + N/2 + 1, tmp, base);
   
   #pragma omp taskwait
 
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
-  //mergeSerial(N, A, tmp);
+  mergeSerial(N, A, tmp);
   //mergeParallel(N/2, A);
-  mergeParallel(A, 0, N/2, (N/2) + 1, N, tmp, 0, base);
-  memcpy (A, tmp, N * sizeof(keytype));
+  //mergeParallel(A, 0, N/2, (N/2) + 1, N, tmp, 0, base);
+  //memcpy (A, tmp, N * sizeof(keytype));
 }
 
 // Merge two ranges of source array T[ p1 .. r1 ] and T[ p2 .. r2 ] 
@@ -300,25 +302,27 @@ void exchange (int& a, int& b){
 	b = a;
 }
 
-void serialMergeSort(int N, keytype* A, keytype* tmp){
-	if(N <  2){
-		return;
+//merge one array
+void serialMergeSort(keytype* A, int start, int end, keytype* tmp){
+	
+	if(start < end){
+		int mid = (p+r)/2;
+		serialMergeSort(A, start, mid, tmp);
+		serialMergeSort(A, mid + 1, end, tmp);
+
+		mergeSerial(A, start, end, tmp);
 	}
-
-	serialMergeSort(N/2, A, tmp);
-	serialMergeSort(N - (N/2), A + (N/2), tmp);
-
-	mergeSerial(N, A, tmp);
 }
 
 //does a serial merge, usefull for single threads 
 //or when at a certain size
-void mergeSerial(int N, keytype* A, keytype* tmp){
-	int i = 0;
-	int j = N/2;
-	int ti = 0;
+void mergeSerial( keytype* A, int start, int end, keytype* tmp){
+	int i = start;
+	int middle  =  (start + (end-start)/2);
+	int j = middle + 1;
+	int ti = start;
 
-	while ( i < N/2 && j < N){
+	while ( i <= middle && j <= end){
 		if (A[i] < A[j]){
 			tmp[ti] = A[i];
 			ti++;
@@ -329,17 +333,17 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 			j++;
 		}
 	}
-	while(i<N/2){
+	while(i<=middle){
 		tmp[ti] = A[i];
 		ti++;
 		i++;
 	}
-	while(j<N){
+	while(j<end){
 		tmp[ti] = A[j];
 		ti++; 
 		j++;
 	}
-	memcpy(A, tmp, N * sizeof (keytype));
+	memcpy(A + start, tmp + start, (end - start + 1) * sizeof (keytype));
 }
 
 int binary_search (keytype* A, int left, int right, keytype key){
