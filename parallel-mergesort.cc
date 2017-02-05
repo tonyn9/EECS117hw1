@@ -191,7 +191,7 @@ parallelSort (int N, keytype* A)
 //recursive call
 void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
-  if (N < 1000000) {
+  if (N < 750000) {
 	  serialMergeSort(N, A, tmp);
 	  return;}
 
@@ -204,11 +204,12 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
   #pragma omp taskwait
 
   mergeSerial(N, A, tmp);
+  //mergeParallel(N/2, A)
 }
 
 //tbd
 void mergeParallel (int N, keytype* A1, keytype* A2, keytype* tmp){
-
+	//assumes that anything lower is already sorted
 }
 
 void serialMergeSort(int N, keytype* A, keytype* tmp){
