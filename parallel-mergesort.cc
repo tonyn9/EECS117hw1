@@ -212,12 +212,9 @@ void mergeSerial( keytype* A, int start, int middle, int end, keytype* tmp){
 int binary_search (keytype* A, int left, int right, keytype key){
 	int low = left;
 	int high;
-	if (left > (right +1)){
-		high = left;
-	}
-	else{
-		high = right + 1;
-	}
+
+	high = (left > (right + 1)) ? left : right + 1;
+
 	while (low < high){
 		int mid = (low + high)/2;
 		if (key <= A[mid]){
