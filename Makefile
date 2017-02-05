@@ -14,6 +14,7 @@ default:
 	@echo "To clean this subdirectory (remove object files"
 	@echo "and other junk), use:"
 	@echo "  make clean"
+	@echo "  make clean-all"
 	@echo "=================================================="
 
 # Mergesort driver using OpenMP
@@ -28,6 +29,9 @@ qsort-omp: driver.o sort.o parallel-qsort.o
 	$(CC) $(CFLAGS) $(COPTFLAGS) -o $@ -c $<
 
 clean:
+	rm -f core *.o *~ qsort-omp mergesort-omp
+	
+clean-all:
 	rm -f core.* *.e* *.o* *.o *~ qsort-omp mergesort-omp
 
 # eof
