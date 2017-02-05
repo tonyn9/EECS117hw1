@@ -189,7 +189,8 @@ parallelSort (int N, keytype* A)
 	{
 		printf("number of threads spawned: %d\n", numThreads);
 	}
-	#pragma omp single{
+	#pragma omp single
+	{
 		parallelMergeSort(N, A, temp_in, N/numThreads);
 	}
 	
