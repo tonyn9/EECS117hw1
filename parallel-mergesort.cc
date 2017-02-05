@@ -204,14 +204,15 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
   #pragma omp taskwait
 
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
-  mergeSerial(N, A, tmp);
+  //mergeSerial(N, A, tmp);
   //mergeParallel(N/2, A);
-  memcpy(A, mergeParallel(N/2, A, N/2, A + (N/2), tmp), N * sizeof(keytype));
+  tmp = mergeParallel(N/2, A, N/2, A + (N/2), tmp);
 }
 
 //tbd
 keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, keytype* tmp){
 	//assumes that anything lower is already sorted
+	keytype* temp = newKeys(A1_Length + A2_Length);
 
 	if(A1_Length + A2_Length < 250000){
 		int a = 0;
@@ -219,23 +220,23 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 		int i = 0;
 		for ( i = 0; i < A1_Length + A2_Length; i++){
 			if (a == A1_Length-1){
-				tmp[i] = A2[b];
+				temp[i] = A2[b];
 				b++;
 			}else if(b == A2_Length-1){
-				tmp[i] = A1[a];
+				temp[i] = A1[a];
 				a++;
 			}else{
 				if (A1[a] >= A2[b]){
-					tmp[i] = A1[a];
+					temp[i] = A1[a];
 					a++;
 				}else{
-					tmp[i] = A2[b];
+					temp[i] = A2[b];
 					b++;
 				}
 			}
 		}
 
-		return tmp;
+		return temp;
 
 	}
 
@@ -248,8 +249,9 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 
 	int k = binary_search (A2,0, A2_Length, (A2[0]+A2[A2_Length-1])/2);
 
-	keytype* temp1 = newKeys(A1_Length *2);
-	keytype* temp2 = newKeys(A1_Length *2);
+	keytype* temp1 = newKeys((A1_Length + k );
+	keytype* temp2 = newKeys(A1_Length + A2_Length-k);
+	
 	//parallel
 	//e1 = merge (c1,d1)
 	//e2 = merge (c2,d2)
@@ -263,13 +265,14 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 
 	#pragma omp taskwait
 
-	memcpy(tmp, temp1, (A1_Length + k ) * sizeof (keytype));
-	memcpy(tmp + (A1_Length + k ), temp2, (A1_Length + A2_Length-k) * sizeof(keytype));
+	memcpy(temp, temp1, (A1_Length + k ) * sizeof (keytype));
+	memcpy(temp + (A1_Length + k ), temp2, (A1_Length + A2_Length-k) * sizeof(keytype));
 
 	free(temp1);
 	free(temp2);
 	//return e1 + e2
-	return tmp;
+	return temp;
+	free (temp);
 }
 
 void serialMergeSort(int N, keytype* A, keytype* tmp){
