@@ -168,6 +168,7 @@ void serialMergeSort(keytype* A, int start, int end, keytype* tmp);
 void mergeSerial( keytype* A, int start, int end, keytype* tmp);
 int binary_search (keytype* A, int left, int right, keytype key);
 void exchange (int& a, int& b);
+static int compare (const void* a, const void* b);
 
 
 // 'Main' sorting function, calls parallel mergesort on array A of size N
@@ -212,7 +213,7 @@ parallelSort (int N, keytype* A)
 void parallelMergeSort( keytype* A, keytype* tmp, int start, int end, int base){
 
   if ((end - start + 1) <= base) {
-	  serialMergeSort(A, start, end, tmp);
+	  qsort (A, N, sizeof (keytype), compare);
 	  return;}
 int middle = start + (end - start)/2;
 
@@ -366,5 +367,16 @@ int binary_search (keytype* A, int left, int right, keytype key){
 	return high;
 }
 
+static int compare (const void* a, const void* b)
+{
+  keytype ka = *(const keytype *)a;
+  keytype kb = *(const keytype *)b;
+  if (ka < kb)
+    return -1;
+  else if (ka == kb)
+    return 0;
+  else
+    return 1;
+}
 
 /* eof */
