@@ -300,7 +300,7 @@ void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, i
 void exchange (int& a, int& b){
 	int c = a;
 	a = b;
-	b = a;
+	b = c;
 }
 
 //merge one array
