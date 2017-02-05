@@ -30,23 +30,23 @@ parallelSort (int N, keytype* A)
   // make a temperorary array to pass to new function
   keytype* temp_in = newKeys(N);
 
-//start parallel blocks
-#pragma omp parallel
-{
-	int numThreads = omp_get_num_threads();
-
-/*	#pragma omp master
+	//start parallel blocks
+	#pragma omp parallel
 	{
-		//because i was running single threaded for the longest time
-		printf("number of threads used: %d\n", numThreads);
-	}*/
+		int numThreads = omp_get_num_threads();
 
-	#pragma omp single
-	{
-		parallelMergeSort( A, temp_in, 0, N-1, N/numThreads);
+	/*	#pragma omp master
+		{
+			//because i was running single threaded for the longest time
+			printf("number of threads used: %d\n", numThreads);
+		}*/
+
+		#pragma omp single
+		{
+			parallelMergeSort( A, temp_in, 0, N-1, N/numThreads);
+		}
+		
 	}
-	
-}
 
   // free temp_in
   free (temp_in);
@@ -57,27 +57,27 @@ parallelSort (int N, keytype* A)
 //Based on CLSR algorithm 3rd edition
 void parallelMergeSort( keytype* A, keytype* tmp, int start, int end, int base){
 
-// at a certain point, extra threads will slow down the system.
-// use sequential algorithm at that point 
-if ((end - start + 1) <= base) {
-	  serialMergeSort(A, start, end, tmp); // faster than qsort actually
-	  return;}
-int middle = start + (end - start)/2;
+	// at a certain point, extra threads will slow down the system.
+	// use sequential algorithm at that point 
+	if ((end - start + 1) <= base) {
+		serialMergeSort(A, start, end, tmp); // faster than qsort actually
+		return;}
+	int middle = start + (end - start)/2;
 
-//start parallel merge sort, thread branch with first call only
-  #pragma omp task
-  {
-  	parallelMergeSort(A, tmp, start, middle, base);
-  }
-  parallelMergeSort(A, tmp, middle + 1, end, base); 
-  #pragma omp taskwait
+	//start parallel merge sort, thread branch with first call only
+	#pragma omp task
+	{
+		parallelMergeSort(A, tmp, start, middle, base);
+	}
+	parallelMergeSort(A, tmp, middle + 1, end, base); 
+	#pragma omp taskwait
 
-  //printf("Ns are: %d %d \n", N/2, N-(N/2));
-  //mergeSerial(A, start, middle, end, tmp);
-  
-  // start parallel merge
-  mergeParallel(A, start,middle, middle + 1, end, tmp, start, base);
-  memcpy (A + start, tmp + start, (end-start+1) * sizeof(keytype));
+	//printf("Ns are: %d %d \n", N/2, N-(N/2));
+	//mergeSerial(A, start, middle, end, tmp);
+	
+	// start parallel merge
+	mergeParallel(A, start,middle, middle + 1, end, tmp, start, base);
+	memcpy (A + start, tmp + start, (end-start+1) * sizeof(keytype));
 }
 
 // Merge two ranges of source array T[ p1 .. r1 ] and T[ p2 .. r2 ] 
