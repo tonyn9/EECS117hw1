@@ -230,7 +230,7 @@ int middle = start + (end - start)/2;
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
   //mergeSerial(A, start, middle, end, tmp);
   
-  mergeParallel(A, 0,middle, middle + 1, end, tmp, start, base);
+  mergeParallel(A, start,middle, middle + 1, end, tmp, start, base);
   memcpy (A + start, tmp + start, (end-start+1) * sizeof(keytype));
 }
 
