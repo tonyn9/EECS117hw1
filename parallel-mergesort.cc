@@ -225,10 +225,10 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
   #pragma omp taskwait
 
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
-  mergeSerial(N, A, tmp);
+  //mergeSerial(N, A, tmp);
   //mergeParallel(N/2, A);
-  //mergeParallel(N/2, A, N/2, A + (N/2), tmp, base);
-  //memcpy (A, tmp, N * sizeof(keytype));
+  mergeParallel(A, 0, N/2, A + (N/2) + 1, N, tmp, 0, base);
+  memcpy (A, tmp, N * sizeof(keytype));
 }
 
 // Merge two ranges of source array T[ p1 .. r1 ] and T[ p2 .. r2 ] 
