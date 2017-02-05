@@ -163,7 +163,7 @@ void parallelSort(int N, keytype* A)
 */
 
 void parallelMergeSort(int N, keytype* A, keytype* tmp, int base);
-void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, int p3 );
+void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, int p3, int base );
 void serialMergeSort(int N, keytype* A, keytype* tmp);
 void mergeSerial(int N, keytype* A, keytype* tmp);
 int binary_search (keytype* A, int left, int right, keytype key);
@@ -235,6 +235,9 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
 // into destination array A starting at index p3.
 void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, int p3, int base ){
 	
+	int length1 = r1 - p1 + 1;
+	int length2 = r2 - p2 + 1;
+
 	if(length1 + length2 <= base){
 		int i = p1;
 		int j = p2;
@@ -263,8 +266,7 @@ void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, i
 		return;
 	}
 	
-	int length1 = r1 - p1 + 1;
-	int length2 = r2 - p2 + 1;
+	
 	if ( length1 < length2 ){
 		exchange(p1, p2);
 		exchange(r1, r2);
