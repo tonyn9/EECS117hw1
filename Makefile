@@ -28,6 +28,6 @@ qsort-omp: driver.o sort.o parallel-qsort.o
 	$(CC) $(CFLAGS) $(COPTFLAGS) -o $@ -c $<
 
 clean:
-	rm -f core *.o *~ qsort-omp mergesort-omp
+	rm -f core.* *.e* *.o* *.o *~ qsort-omp mergesort-omp
 
 # eof
