@@ -214,7 +214,7 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 	//assumes that anything lower is already sorted
 	keytype* temp = newKeys(A1_Length + A2_Length);
 
-	if(A1_Length + A2_Length < 250000){
+	if(A1_Length + A2_Length < 500000){
 		int a = 0;
 		int b = 0;
 		int i = 0;
@@ -262,8 +262,8 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 
 	#pragma omp taskwait
 
-	memcpy(temp, temp1, (A1_Length + k ) * sizeof (keytype));
-	memcpy(temp + (A1_Length + k ), temp2, (A1_Length + A2_Length-k) * sizeof(keytype));
+	memcpy(temp, temp1, (A1_Length/2 + k ) * sizeof (keytype));
+	memcpy(temp + (A1_Length + k ), temp2, (A1_Length/2 + A2_Length-k) * sizeof(keytype));
 
 	free(temp1);
 	free(temp2);
