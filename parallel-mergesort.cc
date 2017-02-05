@@ -222,7 +222,7 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 
 		while (a < A1_Length && b < A2_Length){
 			if (A1[a] < A2[b]){
-				temp[i] = A1[i];
+				temp[i] = A1[a];
 				a++;
 				i++;
 			}else{
@@ -232,7 +232,7 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 			}
 		}
 		while(a<A1_Length/2){
-			temp[i] = A1[i];
+			temp[i] = A1[a];
 			a++;
 			i++;
 		}
