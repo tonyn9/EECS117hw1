@@ -227,7 +227,7 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
   //mergeSerial(N, A, tmp);
   //mergeParallel(N/2, A);
-  mergeParallel(A, 0, N/2, A + (N/2) + 1, N, tmp, 0, base);
+  mergeParallel(A, 0, N/2, (N/2) + 1, N, tmp, 0, base);
   memcpy (A, tmp, N * sizeof(keytype));
 }
 
