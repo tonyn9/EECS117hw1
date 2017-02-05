@@ -228,10 +228,10 @@ int middle = start + (end - start)/2;
   #pragma omp taskwait
 
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
-  mergeSerial(A, start, middle, end, tmp);
-  //mergeParallel(N/2, A);
-  //mergeParallel(A, 0, N/2, (N/2) + 1, N, tmp, 0, base);
-  //memcpy (A, tmp, N * sizeof(keytype));
+  //mergeSerial(A, start, middle, end, tmp);
+  
+  mergeParallel(A, 0, N/2, (N/2) + 1, N, tmp, 0, base);
+  memcpy (A, tmp, N * sizeof(keytype));
 }
 
 // Merge two ranges of source array T[ p1 .. r1 ] and T[ p2 .. r2 ] 
