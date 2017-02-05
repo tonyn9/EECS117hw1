@@ -222,10 +222,10 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 
 
 		for ( i = 0; i < A1_Length + A2_Length; i++){
-			if (a == A1_Length-1){
+			if (a == A1_Length){
 				temp[i] = A2[b];
 				b++;
-			}else if(b == A2_Length-1){
+			}else if(b == A2_Length){
 				temp[i] = A1[a];
 				a++;
 			}else{
