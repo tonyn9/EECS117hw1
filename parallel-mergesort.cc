@@ -163,7 +163,7 @@ void parallelSort(int N, keytype* A)
 */
 
 void parallelMergeSort(int N, keytype* A, keytype* tmp);
-void mergeParallel (int N, keytype* A, keytype* tmp);
+void mergeParallel (int N, keytype* A1, keytype* A2, keytype* tmp);
 void serialMergeSort(int N, keytype* A, keytype* tmp);
 void mergeSerial(int N, keytype* A, keytype* tmp);
 
@@ -191,7 +191,7 @@ parallelSort (int N, keytype* A)
 //recursive call
 void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
-  if (N < 750000) {
+  if (N < 1000000) {
 	  serialMergeSort(N, A, tmp));
 	  return;}
 
@@ -207,7 +207,7 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
 }
 
 //tbd
-void mergeParallel (int N, keytype* A, keytype* tmp){
+void mergeParallel (int N, keytype* A1, keytype* A2, keytype* tmp){
 
 }
 
