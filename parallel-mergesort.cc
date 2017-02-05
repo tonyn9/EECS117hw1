@@ -211,14 +211,14 @@ parallelSort (int N, keytype* A)
 //recursive call
 void parallelMergeSort( keytype* A, keytype* tmp, int start, int end, int base){
 
-  if (N <= base) {
-	  serialMergeSort(N, A, start, end, tmp);
+  if ((end - start + 1) <= base) {
+	  serialMergeSort(A, start, end, tmp, base);
 	  return;}
 int middle = start + (end - start)/2;
 
   #pragma omp task
   {
-  	parallelMergeSort(A, tmp, start, middle, base);
+  	parallelMergeSort(A, start, middle, tmp, base);
   }
   parallelMergeSort(A,  middle + 1, end, tmp, base);
   
@@ -227,7 +227,7 @@ int middle = start + (end - start)/2;
   #pragma omp taskwait
 
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
-  mergeSerial(N, A, tmp);
+  mergeSerial(A, start, end, tmp);
   //mergeParallel(N/2, A);
   //mergeParallel(A, 0, N/2, (N/2) + 1, N, tmp, 0, base);
   //memcpy (A, tmp, N * sizeof(keytype));
