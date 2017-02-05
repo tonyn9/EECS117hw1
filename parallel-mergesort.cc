@@ -206,7 +206,7 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
   //mergeSerial(N, A, tmp);
   //mergeParallel(N/2, A);
-  tmp = mergeParallel(N/2, A, N/2, A + (N/2), tmp);
+  mergeParallel(N/2, A, N/2, A + (N/2), tmp);
 }
 
 //tbd
