@@ -230,8 +230,8 @@ int middle = start + (end - start)/2;
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
   //mergeSerial(A, start, middle, end, tmp);
   
-  mergeParallel(A, 0, N/2, (N/2) + 1, N, tmp, 0, base);
-  memcpy (A, tmp, N * sizeof(keytype));
+  mergeParallel(A, 0,middle, middle + 1, end, tmp, start, base);
+  memcpy (A + start, tmp + start, (end-start+1) * sizeof(keytype));
 }
 
 // Merge two ranges of source array T[ p1 .. r1 ] and T[ p2 .. r2 ] 
