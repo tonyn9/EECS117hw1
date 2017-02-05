@@ -284,9 +284,11 @@ void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, i
 
 	#pragma omp task
 	{
-		parallelMerge(A, p1, q1 - 1, p2, q2 - 1, temp, p3, base);
-		parallelMerge(A, q1 + 1, r1, q2, r2, temp, q3 + 1, base);
+		
+		mergeParallel(A, p1, q1 - 1, p2, q2 - 1, temp, p3, base);
 	}
+		mergeParallel(A, q1 + 1, r1, q2, r2, temp, q3 + 1, base);
+	
 	#pragma omp taskwait
 
 
