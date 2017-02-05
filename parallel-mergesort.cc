@@ -212,15 +212,15 @@ parallelSort (int N, keytype* A)
 void parallelMergeSort( keytype* A, keytype* tmp, int start, int end, int base){
 
   if ((end - start + 1) <= base) {
-	  serialMergeSort(A, start, end, tmp, base);
+	  serialMergeSort(A, start, end, tmp);
 	  return;}
 int middle = start + (end - start)/2;
 
   #pragma omp task
   {
-  	parallelMergeSort(A, start, middle, tmp, base);
+  	parallelMergeSort(A, tmp, start, middle, base);
   }
-  parallelMergeSort(A,  middle + 1, end, tmp, base);
+  parallelMergeSort(A, tmp, middle + 1, end, base);
   
   //parallelMergeSort(N/2, A + N/2 + 1, tmp, base);
   
@@ -306,7 +306,7 @@ void exchange (int& a, int& b){
 void serialMergeSort(keytype* A, int start, int end, keytype* tmp){
 	
 	if(start < end){
-		int mid = (p+r)/2;
+		int mid = (start+end)/2;
 		serialMergeSort(A, start, mid, tmp);
 		serialMergeSort(A, mid + 1, end, tmp);
 
