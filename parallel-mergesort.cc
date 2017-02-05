@@ -206,7 +206,7 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
   mergeSerial(N, A, tmp);
   //mergeParallel(N/2, A);
-  memcpy(A, mergeParallel(N/2, A, A + (N/2), tmp), N * sizeof(keytype));
+  memcpy(A, mergeParallel(N/2, A, N/2, A + (N/2), tmp), N * sizeof(keytype));
 }
 
 //tbd
@@ -259,7 +259,8 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 	memcpy(temp1, mergeParallel(A1_Length/2, A1, k, A2, tmp), (A1_Length + k) * sizeof(keytype));
 
 	#pragma omp task firstprivate (temp1, A1_Length, A1, k, A2, tmp)
-	memcpy(temp2, mergeParallel(A1_Length/2, A1 + A1_Length/2, N-k, A2 + k + 1, tmp), (A1_Length + A2_Length-k) * sizeof(keytype));
+	memcpy(temp2, mergeParallel(A1_Length/2, A1 + A1_Length/2, A2_Length-k, A2 + k + 1, tmp), 
+		(A1_Length + A2_Length-k) * sizeof(keytype));
 
 	#pragma omp taskwait
 
