@@ -12,7 +12,7 @@
 #include "sort.hh"
 //What I did so far.
 
-
+/*
 // Swap two integers a and b
 void intExchange(int& a, int& b)
 {
@@ -64,7 +64,7 @@ void parallelMerge(keytype* TMP, int p1, int r1, int p2, int r2, keytype* OUT, i
 	///////////////////////////////////
 	// use a serial in-place merge when problem size becomes small enough
 	//   to reduce overhead
-	if (n1 < 75000){
+	if (n1 < 100000){
 		int i, j, k;
 		i = p1;
 		j = p2;
@@ -192,7 +192,7 @@ parallelSort (int N, keytype* A)
 void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
   if (N < 750000) {
-	  serialMergeSort(N, A, tmp);
+	  serialMergeSort(N, A, tmp));
 	  return;}
 
   #pragma omp task firstprivate (N, A, tmp)
@@ -203,7 +203,7 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
   #pragma omp taskwait
 
-  parallelMerge(A,0,N/2,N/2 + 1, N, tmp, 0);
+  mergeSerial(N, A, tmp);
 }
 
 //tbd
