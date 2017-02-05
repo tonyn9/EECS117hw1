@@ -162,11 +162,12 @@ void parallelSort(int N, keytype* A)
 
 */
 
-void parallelMergeSort(int N, keytype* A, keytype* tmp);
-keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, keytype* tmp);
+void parallelMergeSort(int N, keytype* A, keytype* tmp, int base);
+void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, int p3 );
 void serialMergeSort(int N, keytype* A, keytype* tmp);
 void mergeSerial(int N, keytype* A, keytype* tmp);
 int binary_search (keytype* A, int left, int right, keytype key);
+void exchange (int& a, int& b);
 
 
 // 'Main' sorting function, calls parallel mergesort on array A of size N
@@ -178,7 +179,23 @@ parallelSort (int N, keytype* A)
 
   // make a temperorary array to pass to new function
   keytype* temp_in = newKeys(N);
-  parallelMergeSort(N, A, temp_in);
+
+
+#pragma omp parallel
+{
+	int numThreads = omp_get_num_threads();
+
+	#pragma omp master
+	{
+		printf("number of threads spawned: %d\n", numThreads);
+	}
+	#pragma omp single{
+		parallelMergeSort(N, A, temp_in, N/numThreads);
+	}
+	
+}
+
+  
 
   // copy values of temp into A
   //memcpy (A, temp_in, N * sizeof (keytype));
@@ -189,99 +206,54 @@ parallelSort (int N, keytype* A)
 
 //Recursive MergeSort Algorithm designed to add threads with each 
 //recursive call
-void parallelMergeSort(int N, keytype* A, keytype* tmp){
+void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
 
-  if (N < 750000) {
+  if (N < base) {
 	  serialMergeSort(N, A, tmp);
 	  return;}
 
   #pragma omp task firstprivate (N, A, tmp)
-  parallelMergeSort(N/2, A, tmp);
+  parallelMergeSort(N/2, A, tmp, base);
 
   #pragma omp task firstprivate (N, A, tmp)
-  parallelMergeSort( N - (N/2), A + (N/2), tmp);
+  parallelMergeSort( N - (N/2), A + (N/2), tmp, base);
 
   #pragma omp taskwait
 
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
-  //mergeSerial(N, A, tmp);
+  mergeSerial(N, A, tmp);
   //mergeParallel(N/2, A);
-  tmp = mergeParallel(N/2, A, N/2, A + (N/2), tmp);
-  memcpy (A, tmp, N * sizeof(keytype));
+  //tmp = mergeParallel(N/2, A, N/2, A + (N/2), tmp);
+  //memcpy (A, tmp, N * sizeof(keytype));
 }
 
-//tbd
-keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, keytype* tmp){
-	//assumes that anything lower is already sorted
-	keytype* temp = newKeys(A1_Length + A2_Length);
-
-	if(A1_Length + A2_Length < 1250000){
-		int a = 0;
-		int b = 0;
-		int i = 0;
-
-		while (a < A1_Length && b < A2_Length){
-			if (A1[a] < A2[b]){
-				temp[i] = A1[a];
-				a++;
-				i++;
-			}else{
-				temp[i] = A2[b];
-				b++;
-				i++;
-			}
-		}
-		while(a<A1_Length/2){
-			temp[i] = A1[a];
-			a++;
-			i++;
-		}
-		while(b<A2_Length){
-			temp[i] = A2[b];
-			b++; 
-			i++;
-		}
-
-		return temp;
-
+// Merge two ranges of source array T[ p1 .. r1 ] and T[ p2 .. r2 ] 
+// into destination array A starting at index p3.
+void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, int p3 ){
+	int length1 = r1 - p1 + 1;
+	int length2 = r2 - p2 + 1;
+	if ( length1 < length2 ){
+		exchange(p1, p2);
+		exchange(r1, r2);
+		exchange(length1, length2);
 	}
 
-	// V = A[floor(na/2)] -> (c1,c2)
-	// A[0:N/2], A[N/2 +1, N]
+	if(length1 == 0){
+		return;
+	}
+	int q1 = (p1 + r1)/2;
+	int q2 = binary_search(A, p2, r2, A[q1] );
+	int q3 = p3 + (q1 - p1) + (q2 - p2);
+
+	temp[q3] = A[q1];
 
 
-	// k = binary search (B,k0) -> (d1,d2)
-	//(d1, d2) <- (B[0:k], B[k+1, N])
+}
 
-	//int k = binary_search (A2,0, A2_Length, (A2[0]+A2[A2_Length-1])/2);
-	
-	//parallel
-	//e1 = merge (c1,d1)
-	//e2 = merge (c2,d2)
-	//sync
-
-	/*#pragma omp task firstprivate (A1_Length, A1, k, A2, tmp)
-	keytype* temp1 = mergeParallel(A1_Length/2, A1, k, A2, tmp);
-
-	#pragma omp task firstprivate ( A1_Length, A1, k, A2, A2_Length, tmp)
-	keytype* temp2 = mergeParallel(A1_Length/2, A1 + A1_Length/2, A2_Length-k, A2 + k + 1, tmp);*/
-
-	#pragma omp task firstprivate (A1_Length, A1, A2_Length, A2, tmp)
-	keytype* temp1 = mergeParallel(A1_Length/2, A1, A2_Length/2, A2, tmp);
-
-	#pragma omp task firstprivate ( A1_Length, A1, A2, A2_Length, tmp)
-	keytype* temp2 = mergeParallel(A1_Length/2, A1 + A1_Length/2, A2_Length/2, A2 + A2_Length/2, tmp);
-
-	#pragma omp taskwait
-
-	memcpy(temp, temp1, (A1_Length) * sizeof (keytype));
-	memcpy(temp + (A1_Length/2 + A2_Length/2), temp2, (A1_Length/2 + A2_Length/2) * sizeof(keytype));
-
-	free(temp1);
-	free(temp2);
-	//return e1 + e2
-	return temp;
-	free (temp);
+void exchange (int& a, int& b){
+	int c = a;
+	a = b;
+	b = a;
 }
 
 void serialMergeSort(int N, keytype* A, keytype* tmp){
