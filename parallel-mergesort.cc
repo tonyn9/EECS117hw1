@@ -215,28 +215,31 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 	//assumes that anything lower is already sorted
 	keytype* temp = newKeys(A1_Length + A2_Length);
 
-	if(A1_Length + A2_Length < 2500000){
+	if(A1_Length + A2_Length < 1250000){
 		int a = 0;
 		int b = 0;
 		int i = 0;
 
-
-		for ( i = 0; i < A1_Length + A2_Length; i++){
-			if (a == A1_Length){
-				temp[i] = A2[b];
-				b++;
-			}else if(b == A2_Length){
-				temp[i] = A1[a];
+		while (i < A1_Length && j < A2_Length){
+			if (A1[a] < A2[b]){
+				temp[i] = A1[i];
 				a++;
+				i++;
 			}else{
-				if (A1[a] >= A2[b]){
-					temp[i] = A2[b];
-					b++;
-				}else{
-					temp[i] = A1[a];
-					a++;
-				}
+				temp[i] = A[b];
+				b++;
+				i++;
 			}
+		}
+		while(a<A1_Length/2){
+			temp[i] = A1[i];
+			a++;
+			i++;
+		}
+		while(b<A2_Length){
+			temp[i] = A2[b];
+			b++; 
+			i++;
 		}
 
 		return temp;
