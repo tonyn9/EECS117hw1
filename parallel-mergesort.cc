@@ -249,7 +249,7 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 
 	int k = binary_search (A2,0, A2_Length, (A2[0]+A2[A2_Length-1])/2);
 
-	keytype* temp1 = newKeys((A1_Length + k );
+	keytype* temp1 = newKeys(A1_Length + k );
 	keytype* temp2 = newKeys(A1_Length + A2_Length-k);
 	
 	//parallel
