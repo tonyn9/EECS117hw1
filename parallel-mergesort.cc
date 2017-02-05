@@ -163,11 +163,11 @@ void parallelSort(int N, keytype* A)
 */
 
 void parallelMergeSort(int N, keytype* A, keytype* tmp);
-void mergeParallel (int N, keytype* A1, keytype* A2, keytype* tmp);
+keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, keytype* tmp);
 void serialMergeSort(int N, keytype* A, keytype* tmp);
 void mergeSerial(int N, keytype* A, keytype* tmp);
+int binary_search (keytype* A, int left, int right, keytype key);
 
-static int compare (const void* a, const void* b);
 
 // 'Main' sorting function, calls parallel mergesort on array A of size N
 // returns A, sorted
@@ -203,14 +203,73 @@ void parallelMergeSort(int N, keytype* A, keytype* tmp){
 
   #pragma omp taskwait
 
-  printf("Ns are: %d %d \n", N/2, N-(N/2));
+  //printf("Ns are: %d %d \n", N/2, N-(N/2));
   mergeSerial(N, A, tmp);
-  //mergeParallel(N/2, A)
+  //mergeParallel(N/2, A);
+  memcpy(A, mergeParallel(N/2, A, A + (N/2), keytype* tmp), N * sizeof(keytype));
 }
 
 //tbd
-void mergeParallel (int N, keytype* A1, keytype* A2, keytype* tmp){
+keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, keytype* tmp){
 	//assumes that anything lower is already sorted
+
+	if(N < 250000){
+		int a = 0;
+		int b = 0;
+		int i = 0;
+		for ( i = 0; i < A1_Length + A2_Length; i++){
+			if (a == A1_Length-1){
+				tmp[i] = A2[b];
+				b++;
+			}else if(b == A2_Length-1){
+				temp[i] = A1[a];
+				a++;
+			}else{
+				if (A1[a] >= A2[b]){
+					temp[i] = A1[a];
+					a++;
+				}else{
+					tmp[i] = A2[b];
+					b++;
+				}
+			}
+		}
+
+		return tmp;
+
+	}
+
+	// V = A[floor(na/2)] -> (c1,c2)
+	// A[0:N/2], A[N/2 +1, N]
+
+
+	// k = binary search (B,k0) -> (d1,d2)
+	//(d1, d2) <- (B[0:k], B[k+1, N])
+
+	int k = binary_search (A2,0, A2_Length, (A2[0]+A2[A2_Length-1])/2);
+
+	keytype* temp1 = newKeys(A1_Length + k);
+	keytype* temp2 = newKeys(A1_Length + (A2_Length-k));
+	//parallel
+	//e1 = merge (c1,d1)
+	//e2 = merge (c2,d2)
+	//sync
+
+	#pragma omp task firstprivate (temp1, A1_Length, A1, k, A2, tmp)
+	memcpy(temp1, mergeParallel(A1_Length/2, A1, k, A2, tmp), (A1_Length + k) * sizeof(keytype));
+
+	#pragma omp task firstprivate (temp1, A1_Length, A1, k, A2, tmp)
+	memcpy(temp2, mergeParallel(A1_Length/2, A1 + N/2, N-k, A2 + k + 1, tmp), (A1_Length + A2_Length-k) * sizeof(keytype));
+
+	#pragma omp taskwait
+
+	memcpy(tmp, temp1, (A1_Length + k ) * sizeof (keytype));
+	memcpy(tmp + (A1_Length + k ), temp2, (A1_Length + A2_Length-k) * sizeof(keytype));
+
+	free(temp1);
+	free(temp2);
+	//return e1 + e2
+	return tmp;
 }
 
 void serialMergeSort(int N, keytype* A, keytype* tmp){
@@ -255,16 +314,25 @@ void mergeSerial(int N, keytype* A, keytype* tmp){
 	memcpy(A, tmp, N * sizeof (keytype));
 }
 
-static int compare (const void* a, const void* b)
-{
-  keytype ka = *(const keytype *)a;
-  keytype kb = *(const keytype *)b;
-  if (ka < kb)
-    return -1;
-  else if (ka == kb)
-    return 0;
-  else
-    return 1;
+int binary_search (keytype* A, int left, int right, keytype key){
+	int low = left;
+	int high;
+	if (left > (right +1)){
+		high = left;
+	}
+	else{
+		high = right + 1;
+	}
+	while (low < high){
+		int mid = (low + high)/2;
+		if (key <= A[mid]){
+			high = mid;
+		}else{
+			low = mid + 1;
+		}
+	}
+	return high;
 }
+
 
 /* eof */
