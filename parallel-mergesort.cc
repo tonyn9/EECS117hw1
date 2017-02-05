@@ -261,10 +261,10 @@ keytype* mergeParallel (int A1_Length, keytype* A1, int A2_Length, keytype* A2, 
 	#pragma omp task firstprivate ( A1_Length, A1, k, A2, A2_Length, tmp)
 	keytype* temp2 = mergeParallel(A1_Length/2, A1 + A1_Length/2, A2_Length-k, A2 + k + 1, tmp);*/
 
-	#pragma omp task firstprivate (A1_Length, A1, k, A2, tmp)
+	#pragma omp task firstprivate (A1_Length, A1, A2_Length, A2, tmp)
 	keytype* temp1 = mergeParallel(A1_Length/2, A1, A2_Length/2, A2, tmp);
 
-	#pragma omp task firstprivate ( A1_Length, A1, k, A2, A2_Length, tmp)
+	#pragma omp task firstprivate ( A1_Length, A1, A2, A2_Length, tmp)
 	keytype* temp2 = mergeParallel(A1_Length/2, A1 + A1_Length/2, A2_Length/2, A2 + A2_Length/2, tmp);
 
 	#pragma omp taskwait
