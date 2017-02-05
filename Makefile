@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS =
 COPTFLAGS = -O3 -g -fopenmp
-DEBUGFLAGS = -00 -g
+DEBUGFLAGS = -OO -g
 LDFLAGS =
 
 
