@@ -220,6 +220,8 @@ void serialMergeSort(int N, keytype* A, keytype* tmp){
 	serialMergeSort(N/2, A, tmp);
 	serialMergeSort(N - (N/2), A + (N/2), tmp);
 
+
+	printf("Ns are: %d %d \n", N/2, N-(N/2));
 	mergeSerial(N, A, tmp);
 
 }
