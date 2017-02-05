@@ -213,7 +213,7 @@ parallelSort (int N, keytype* A)
 void parallelMergeSort( keytype* A, keytype* tmp, int start, int end, int base){
 
   if ((end - start + 1) <= base) {
-	  qsort (A, N, sizeof (keytype), compare);
+	  qsort (A + start, end - start + 1, sizeof (keytype), compare);
 	  return;}
 int middle = start + (end - start)/2;
 
