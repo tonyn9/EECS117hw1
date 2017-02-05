@@ -210,6 +210,7 @@ parallelSort (int N, keytype* A)
 void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
 
   if (N < base) {
+	  //printf("base: %d\n", base);
 	  serialMergeSort(N, A, tmp);
 	  return;}
 
