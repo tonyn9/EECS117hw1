@@ -251,7 +251,7 @@ void mergeParallel (keytype* A, int p1, int r1, int p2, int r2, keytype* temp, i
 				temp[k] = A[i];
 				i++;
 			} else{
-				temp[k] = A[i];
+				temp[k] = A[j];
 				j++;
 			}
 			k++;
