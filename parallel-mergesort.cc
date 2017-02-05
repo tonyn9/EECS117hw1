@@ -311,7 +311,7 @@ void serialMergeSort(keytype* A, int start, int end, keytype* tmp){
 		serialMergeSort(A, start, mid, tmp);
 		serialMergeSort(A, mid + 1, end, tmp);
 
-		mergeSerial(A, start, end, tmp);
+		mergeSerial(A, start, mid, end, tmp);
 	}
 }
 
