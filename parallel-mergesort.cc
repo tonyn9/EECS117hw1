@@ -185,6 +185,12 @@ parallelSort (int N, keytype* A)
 {
 	int numThreads = omp_get_num_threads();
 
+	#pragma omp master
+	{
+		//because i was running single threaded for the longest time
+		printf("number of threads used: %d\n", numThreads);
+	}
+
 	#pragma omp single
 	{
 		parallelMergeSort(N, A, temp_in, N/numThreads);
