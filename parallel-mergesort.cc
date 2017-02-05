@@ -185,10 +185,6 @@ parallelSort (int N, keytype* A)
 {
 	int numThreads = omp_get_num_threads();
 
-	#pragma omp master
-	{
-		printf("number of threads spawned: %d\n", numThreads);
-	}
 	#pragma omp single
 	{
 		parallelMergeSort(N, A, temp_in, N/numThreads);
@@ -210,16 +206,14 @@ parallelSort (int N, keytype* A)
 void parallelMergeSort(int N, keytype* A, keytype* tmp, int base){
 
   if (N < base) {
-	  //printf("base: %d\n", base);
 	  serialMergeSort(N, A, tmp);
 	  return;}
 
-  #pragma omp task firstprivate (N, A, tmp)
+  #pragma omp task
+  {
   parallelMergeSort(N/2, A, tmp, base);
-
-  #pragma omp task firstprivate (N, A, tmp)
   parallelMergeSort( N - (N/2), A + (N/2), tmp, base);
-
+  }
   #pragma omp taskwait
 
   //printf("Ns are: %d %d \n", N/2, N-(N/2));
