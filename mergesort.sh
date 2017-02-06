@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -N mergesort
-#$ -q free64,pub64
+#$ -q free64,pub64,eecs117
 #$ -pe openmp 8
 
 # Module load gcc compiler version 4.8.2
